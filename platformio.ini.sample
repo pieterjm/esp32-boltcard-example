@@ -1,0 +1,31 @@
+; PlatformIO Project Configuration File
+;
+;   Build options: build flags, source filter
+;   Upload options: custom upload port, speed and extra flags
+;   Library options: dependencies, extra library storages
+;   Advanced options: extra scripting
+;
+; Please visit documentation for the other options and examples
+; https://docs.platformio.org/page/projectconf.html
+
+[platformio]
+;src_dir = Bolty
+
+[env:ESP32-DEV]
+platform = espressif32
+board = lilygo-t-display-s3
+build_flags =
+	-D INVOICE_KEY=\"lnbits invoice key\"
+	-D INVOICE_URL=\"https://lnbits server/api/v1/payments\"
+	-D WIFI_SSID=\"wifi network\"
+	-D WIFI_PWD=\"wifi password\"
+	-D PN532_SCK=12
+	-D PN532_MOSI=11
+	-D PN532_SS=10
+	-D PN532_MISO=13
+framework = arduino
+monitor_speed = 115200
+lib_deps = 
+	bblanchon/ArduinoJson@^6.21.3
+	https://github.com/bitcoin-ring/Adafruit-PN532-NTAG424
+	arduino-libraries/Arduino_CRC32@^1.0.0
