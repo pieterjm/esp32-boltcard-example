@@ -1,11 +1,16 @@
 #include <Adafruit_PN532_NTAG424.h>
+#ifdef USE_SPI
 #include <SPI.h>
+#endif
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 
 
 // Use this line for a breakout with a software SPI connection (recommended):
+#ifdef USE_SPI
 Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
+#endif
+
 
 void setup(void) {
   WiFi.begin(WIFI_SSID,WIFI_PWD);
@@ -57,8 +62,7 @@ bool make_lnurlw_withdraw(String lnurlw, int amount, String memo = "") {
 
   String payload = http.getString();
   http.end();
-  Serial.println(payload);
-
+  
   DynamicJsonDocument doc(2000);
   DeserializationError error = deserializeJson(doc, payload.c_str());
   if ( error != DeserializationError::Ok ) {
@@ -69,6 +73,18 @@ bool make_lnurlw_withdraw(String lnurlw, int amount, String memo = "") {
   // extract callback URL and k1
   String callback = doc["callback"].as<String>();
   String k1 = doc["k1"].as<String>();
+  String status = doc["status"].as<String>();
+  String reason = doc["reason"].as<String>();
+  if (( status != NULL ) && status.equals("ERROR")) {
+    Serial.println("Error in LNURLW response");
+    Serial.println(reason);
+    return false;
+  }
+
+  if ( callback == NULL ) {
+    Serial.println("No callback in LNURLW response");
+    return false;
+  }
 
   // create an invoice, for now we ignore the min/max of the card
   http.begin(INVOICE_URL);
@@ -99,6 +115,7 @@ bool make_lnurlw_withdraw(String lnurlw, int amount, String memo = "") {
     return false;
   }
 
+
   String payment_request = doc["payment_request"].as<String>();
 
 
@@ -122,7 +139,7 @@ bool make_lnurlw_withdraw(String lnurlw, int amount, String memo = "") {
     return false;
   }
  
-  String status = doc["status"].as<String>();  
+  status = doc["status"].as<String>();  
 
   if ( status.equals("OK") ) {
     Serial.println("Payment succesfull");
