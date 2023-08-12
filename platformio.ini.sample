@@ -19,10 +19,16 @@ build_flags =
 	-D INVOICE_URL=\"https://lnbits server/api/v1/payments\"
 	-D WIFI_SSID=\"wifi network\"
 	-D WIFI_PWD=\"wifi password\"
-	-D PN532_SCK=12
-	-D PN532_MOSI=11
-	-D PN532_SS=10
-	-D PN532_MISO=13
+; Uncomment the following lines for I2C
+;	-D USE_I2C
+;	-D PN532_SDA=18
+;	-D PN532_SCL=17
+; Uncomment the following lines for SPI
+;	-D USE_SPI
+;	-D PN532_SCK=12
+;	-D PN532_MOSI=11
+;	-D PN532_SS=10
+;	-D PN532_MISO=13
 framework = arduino
 monitor_speed = 115200
 lib_deps = 

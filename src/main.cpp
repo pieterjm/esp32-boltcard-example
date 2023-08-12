@@ -2,6 +2,9 @@
 #ifdef USE_SPI
 #include <SPI.h>
 #endif
+#ifdef USE_I2C
+#include <Wire.h>
+#endif
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 
@@ -9,6 +12,9 @@
 // Use this line for a breakout with a software SPI connection (recommended):
 #ifdef USE_SPI
 Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
+#endif
+#ifdef USE_I2C
+Adafruit_PN532 nfc(PN532_SCL,PN532_SDA);
 #endif
 
 
